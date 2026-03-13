@@ -1,3 +1,13 @@
+@app.delete("/activities/{activity_name}/participants/{email}")
+def remove_participant(activity_name: str, email: str):
+    """Remove a participant from an activity"""
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
+    activity = activities[activity_name]
+    if email not in activity["participants"]:
+        raise HTTPException(status_code=404, detail="Participant not found in this activity")
+    activity["participants"].remove(email)
+    return {"message": f"Removed {email} from {activity_name}"}
 """
 High School Management System API
 
@@ -39,6 +49,46 @@ activities = {
         "max_participants": 30,
         "participants": ["john@mergington.edu", "olivia@mergington.edu"]
     }
+    ,
+    # Sports
+    "Football Team": {
+        "description": "Join the school football team and participate in matches",
+        "schedule": "Tuesdays, 4:00 PM - 6:00 PM",
+        "max_participants": 25,
+        "participants": []
+    },
+    "Swimming Club": {
+        "description": "Learn and practice swimming techniques",
+        "schedule": "Thursdays, 5:00 PM - 6:30 PM",
+        "max_participants": 15,
+        "participants": []
+    },
+    # Artistiques
+    "Painting Workshop": {
+        "description": "Explore painting styles and techniques",
+        "schedule": "Wednesdays, 3:00 PM - 4:30 PM",
+        "max_participants": 10,
+        "participants": []
+    },
+    "Drama Club": {
+        "description": "Acting, improvisation and stage performance",
+        "schedule": "Fridays, 4:00 PM - 5:30 PM",
+        "max_participants": 18,
+        "participants": []
+    },
+    # Intellectuelles
+    "Math Olympiad": {
+        "description": "Prepare for math competitions and solve challenging problems",
+        "schedule": "Mondays, 4:00 PM - 5:00 PM",
+        "max_participants": 16,
+        "participants": []
+    },
+    "Science Club": {
+        "description": "Conduct experiments and explore scientific topics",
+        "schedule": "Thursdays, 3:30 PM - 5:00 PM",
+        "max_participants": 20,
+        "participants": []
+    }
 }
 
 
@@ -63,5 +113,8 @@ def signup_for_activity(activity_name: str, email: str):
     activity = activities[activity_name]
 
     # Add student
+    # Validate student is not already signed up
+    if email in activity["participants"]:
+        raise HTTPException(status_code=400, detail="Student already signed up for this activity")  
     activity["participants"].append(email)
     return {"message": f"Signed up {email} for {activity_name}"}
