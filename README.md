@@ -33,5 +33,39 @@
 
 ---
 
-&copy; 2025 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
+## Code explanation
 
+This repository contains a small FastAPI application for managing extracurricular
+activities at Mergington High School.
+
+### Backend flow
+
+- `src/app.py` creates the FastAPI app and mounts the static frontend from
+  `src/static`.
+- The `activities` dictionary is an in-memory data store where each activity has
+  a description, schedule, maximum capacity, and current participant list.
+- `GET /` redirects the browser to the frontend page.
+- `GET /activities` returns the full activity dictionary as JSON so the frontend
+  can render the available clubs and participant counts.
+- `POST /activities/{activity_name}/signup?email=...` validates the activity,
+  rejects duplicate signups, and adds a student email to the selected activity.
+- `DELETE /activities/{activity_name}/participants/{email}` removes a student
+  from the chosen activity and returns a confirmation message.
+
+### Frontend flow
+
+- `src/static/index.html` defines the page layout with an activity list and
+  signup form.
+- `src/static/app.js` loads the activities from the API, renders each activity
+  card, submits new signups, and sends delete requests when a participant is
+  removed from the UI.
+- `src/static/styles.css` provides the page layout, card styling, and
+  success/error message styles.
+
+### Tests
+
+- `tests/test_app.py` uses FastAPI's `TestClient` to verify listing activities,
+  signing up successfully, blocking duplicate signups, handling missing
+  participants, and handling unknown activities.
+
+&copy; 2025 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
